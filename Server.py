@@ -9,7 +9,7 @@ import socket
 import threading
 
 HEADER = 64
-PORT = 5053
+PORT = 5051
 SERVER = socket.gethostbyname(socket.gethostname())
 ADDR = (SERVER, PORT)
 FORMAT = 'utf-8'
@@ -40,7 +40,7 @@ def handle_client_photo(conn, addr):
                 return 
 
             print(f"[{addr}] {msg}")
-            file = open("try.PNG", "ab")
+            file = open("calc.ods", "ab")
             file.write(msg)
             conn.send("Msg received".encode(FORMAT))
             file.close()
