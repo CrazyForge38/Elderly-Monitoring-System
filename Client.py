@@ -7,7 +7,7 @@ import json
 
 
 HEADER = 64
-PORT = 5051
+PORT = 5053
 FORMAT = 'utf-8'
 DISCONNECT_MESSAGE = "!DISCONNECT"
 SERVER = socket.gethostbyname(socket.gethostname())
@@ -42,7 +42,7 @@ def send_Raw_Data(msg):
 
 def Sys_Call_Photo():
     print("#Testing print")
-    file = open("excel.ods", 'rb')
+    file = open("Json.txt", 'rb')
     image_data = file.read(2048)
     #print(image_data)
     print()
