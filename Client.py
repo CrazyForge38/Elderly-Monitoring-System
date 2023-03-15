@@ -7,7 +7,7 @@ import json
 
 
 HEADER = 64
-PORT = 5051
+PORT = 5052
 FORMAT = 'utf-8'
 DISCONNECT_MESSAGE = "!DISCONNECT"
 SERVER = socket.gethostbyname(socket.gethostname())
@@ -40,9 +40,9 @@ def send_Raw_Data(msg):
         client.sendall(msg)
         print(client.recv(2048).decode(FORMAT))
 
-def Sys_Call_Photo():
+def Sys_Call_Photo(file):
     print("#Testing print")
-    file = open("jsontest.txt", 'rb')
+    file = open(file, 'rb')
     image_data = file.read(2048)
     #print(image_data)
     print()
@@ -56,7 +56,7 @@ def Sys_Call_Photo():
 
 def update_json():
     print('+')
-    metadata = {"sensor_id": 142, "date": "xx/xx/xx", "time": "12:23:43", "Board_id": 32, "location": "bedroom", "path": "fes/fse/sef", "file_type": ".ods", "action": "add to this"}
+    metadata = {'sensor_id': 122, 'date': 'xx/xx/xx', 'time': '12:23:43', 'Board_id': 32, 'location': 'bedroom', 'path': 'fes/fse/sef', 'file_type': '.ods', 'action': 'add to this'}
     metadata_str = json.dumps(metadata)
     file_type = "jsontest.txt"
     instruction = 1
@@ -74,9 +74,10 @@ def Sys_Call_Request():
         send_message(sys_call)
         print("After first msg sent")
         sys_call = int(sys_call)
-        if sys_call == 4:
+        if sys_call == 1:
             print("phjto call")
-            Sys_Call_Photo()
+            Sys_Call_Photo("Json.txt")
+            Sys_Call_Photo("calc.ods")
         if sys_call == 2:
             send_message("Test the world")
         if sys_call == 7:
