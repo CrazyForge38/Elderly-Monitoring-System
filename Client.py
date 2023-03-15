@@ -1,5 +1,10 @@
 #!/usr/bin/python3
+from pickle import TRUE
 import socket
+import sys
+import subprocess
+import json
+
 
 HEADER = 64
 PORT = 5051
@@ -12,7 +17,20 @@ print(SERVER)
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client.connect(ADDR)
 
-def send(msg):
+def send_message(msg):
+    message = msg.encode(FORMAT)
+    msg_length = len(message)
+    send_length = str(msg_length).encode(FORMAT)
+    send_length += b' ' * (HEADER - len(send_length))
+    client.send(send_length)
+    client.send(message)
+    print(f"[Sending] {message.decode(FORMAT)}")
+
+def recv_message():
+    print(f"[clinet ID: #] {client.recv(2048).decode(FORMAT)}")
+    #print(client.recv(2048).decode(FORMAT))
+
+def send_Raw_Data(msg):
     if type(msg) is bytes:
         message = msg
         msg_length = len(message)
@@ -20,26 +38,48 @@ def send(msg):
         send_length += b' ' * (HEADER - len(send_length))
         client.send(send_length)
         client.sendall(msg)
-    else:
-        print(msg)
-        message = msg.encode(FORMAT)
-        msg_length = len(message)
-        send_length = str(msg_length).encode(FORMAT)
-        send_length += b' ' * (HEADER - len(send_length))
-        client.send(send_length)
-        client.send(message)
-    print(client.recv(2048).decode(FORMAT))
- 
-#file = open("thatonephoto.jpg", 'rb')
-#image_data = file.read(2048)
-#while image_data:
-#    send(image_data)
-#    image_data = file.read(2048)
-#file.close()   
-input() 
-send("Hello World!")
-input()
-send("Hello everyone")
-input()
-#send("hello Tim")
-#send(DISCONNECT_MESSAGE) 
+        print(client.recv(2048).decode(FORMAT))
+
+def Sys_Call_Photo():
+    print("#Testing print")
+    file = open("jsontest.txt", 'rb')
+    image_data = file.read(2048)
+    #print(image_data)
+    print()
+    print()
+    while image_data:
+        send_Raw_Data(image_data)
+        image_data = file.read(2048)
+    file.close() 
+    print("[+] closed File")
+    send_message(DISCONNECT_MESSAGE)
+
+def update_json():
+    print('+')
+    metadata = {"sensor_id": 142, "date": "xx/xx/xx", "time": "12:23:43", "Board_id": 32, "location": "bedroom", "path": "fes/fse/sef", "file_type": ".ods", "action": "add to this"}
+    metadata_str = json.dumps(metadata)
+    file_type = "jsontest.txt"
+    instruction = 1
+    print('+')
+    result = subprocess.run(['python3', '/home/david/Desktop/Backend/jrw.py', file_type, str(instruction), metadata_str], stdout=subprocess.PIPE)
+    print(result.stdout.decode())
+    print(')))))')
+
+def Sys_Call_Request():
+    while TRUE:
+        recv_message()
+        print("Enter a sys call: ", end='')
+        #read = input()
+        sys_call = input()
+        send_message(sys_call)
+        print("After first msg sent")
+        sys_call = int(sys_call)
+        if sys_call == 4:
+            print("phjto call")
+            Sys_Call_Photo()
+        if sys_call == 2:
+            send_message("Test the world")
+        if sys_call == 7:
+            update_json()
+
+Sys_Call_Request()
