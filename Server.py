@@ -2,11 +2,14 @@
 
 #from asyncio.windows_events import NULL
 #from pickle import FALSE, TRUE
-from ctypes.wintypes import BYTE
+#from ctypes.wintypes import BYTE
 from pickle import TRUE
 import socket
 #import sys 
 import threading
+import sys
+import subprocess
+import json
 
 HEADER = 64
 PORT = 5051
@@ -24,11 +27,11 @@ server.bind(ADDR)
 
 def handle_client_photo(conn, addr):
     #print(f"[NEW CONNECTION] {addr} connected.")
-    print("Hanbdling photo")
+    print("Hanbdling file")
 
     connected = True
     while connected:
-        print("[+] in photo while loop")
+        print("[+] in while loop")
         msg_length = conn.recv(HEADER)#
         if msg_length:
             msg_length = int(msg_length)
@@ -47,8 +50,69 @@ def handle_client_photo(conn, addr):
     conn.close()
     return
 
+def grab_Json(conn, addr, id):
+    dir_name = "mainboard" + str(id)
+    subprocess.run(['mkdir', dir_name], stdout=subprocess.PIPE)
+    subprocess.run(['cd', dir_name], stdout=subprocess.PIPE)
+    file = open("Json.txt", "w") ### I will need a mutex!!!!
+    file.close()
+    #print(f"[NEW CONNECTION] {addr} connected.")
+    print("Hanbdling file")
+
+    connected = True
+    while connected:
+        print("[+] in while loop")
+        msg_length = conn.recv(HEADER)#
+        if msg_length:
+            msg_length = int(msg_length)
+            msg = conn.recv(msg_length)#
+            if msg == DISCONNECT_MESSAGE.encode(FORMAT):
+                connected = False
+                print(f"[{addr}] Client disconnected")
+                #conn.close()
+                return 
+
+            print(f"[{addr}] {msg}")
+            file = open("Json.txt", "ab")
+            file.write(msg)
+            conn.send("Msg received".encode(FORMAT))
+            file.close()
+    conn.close()
+    return
+
+def grab_Storage_Data(conn, addr):
+    file_type = "EMPTY"
+    free = "EMPTY"
+    instruction = 0
+    print("+_+_+_+_+_")
+    output = subprocess.run(['python3', '/home/david/Desktop/Backend/jrw.py', file_type, str(instruction), free], stdout=subprocess.PIPE)
+    print("///////////////////////////////")
+    #metadata = json.loads(output.stdout.decode('utf-8'))
+    print(f" this is the return output: {output}")
+    print("[+]")
+    print("[+]")
+    print("[+]")
+    print("tetstetstesetsettse")
+    print("[++]")
+    print("[++]")
+    print("[++]")
+    print(output)
+    print("[+++]")
+    print("[+++]")
+    print("[+++]")
+    stdout_str = output.stdout.decode('utf-8')
+    print(stdout_str, end='')  # print the contents of stdout_str to the console
+    print("[++++]")
+    print("[++++]")
+    print("[++++]")
+    #location = stdout_str['location']
+    metadata = json.loads(stdout_str)
+    file_type = metadata['location']
+    location = stdout_str['location']
+    print(file_type, location)
 
 def handling_client(conn, addr): # this whole thing in a while loop
+    # code to create directory of id x
     print("We are waiting for the client to send us commands")
     while TRUE:
         send_message("Waiting for a sys call", conn, addr)
@@ -65,7 +129,8 @@ def handling_client(conn, addr): # this whole thing in a while loop
         if sys_call == 3:
             print(f"[{addr}] sys_call3: {sys_call}")
         if sys_call == 4:
-            print("wrong")
+            grab_Json(conn, addr, id) ## need to store this in another directory. 
+            #grab_Storage_Data(conn, addr)
 
 
 def send_message(msg, conn, addr): #no need fot addr
@@ -85,9 +150,11 @@ def recv_message(conn, addr):
     return msg
 
 def start():
+    id = 0
     server.listen()
     print(f"[LISTENING] Server is listening on {SERVER}")
     while True:
+        id =+ 1
         conn, addr = server.accept() #waits for a connection and this is where I should do the nnummber thing  
         thread = threading.Thread(target=handling_client, args=(conn, addr))
         thread.start() 
