@@ -21,28 +21,8 @@ EMPTY_BYTE = "b'!DISCONNECT'"
 
 client_counter = 0
 
-
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind(ADDR)
-
-def handle_client_photo(conn, addr): ##3 does not get called
-    connected = True
-    while connected:
-        msg_length = conn.recv(HEADER)#
-        if msg_length:
-            msg_length = int(msg_length)
-            msg = conn.recv(msg_length)#
-            if msg == DISCONNECT_MESSAGE.encode(FORMAT):
-                connected = False
-                print(f"[{addr}] file recived")
-                return 
-
-            file = open("calc.ods", "ab")
-            file.write(msg)
-            conn.send("Msg received".encode(FORMAT))
-            file.close()
-    conn.close()
-    return
 
 def read_json(conn, addr, board_path):
     file_path = os.path.join(board_path, "json.txt")
