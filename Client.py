@@ -39,7 +39,8 @@ def send_Raw_Data(msg):
         client.sendall(msg)
 
 def send_file(file):
-    path = '/home/david/Desktop/Backend/' + file
+    path = '/home/david/Desktop/Backend/Data/Sensor' + file
+    print(f"[+] {path}")
     file = open(path, 'rb')
     image_data = file.read(2048)
     while image_data:
@@ -50,12 +51,22 @@ def send_file(file):
     send_message(DISCONNECT_MESSAGE)
 
 def update_json(): # some of the metadata will be board specific
-    metadata = {'sensor_id': 78787, 'date': 'xx/xx/xx', 'time': '12:23:43', 'Board_id': 32, 'location': 'bedroom', 'path': 'fes/fse/sef', 'file_type': 'excel1.ods', 'action': 'add to this'}
+    metadata = {'sensor_id': 78787, 'date': 'xx/xx/xx', 'time': '12:23:43', 'Board_id': 32, 'location': 'bedroom', 'path': 'fes/fse/sef', 'file_type': 'calc.ods', 'action': 'add to this'}
     with open('/home/david/Desktop/Backend/Json.txt', 'r+') as f:
             f.truncate()
             f.seek(0)
             json.dump(metadata, f)
             print("[+] updated Json")
+
+def client_request(id, fileinfo):
+    jsonfile = str(id) + '/' + "json.txt"
+    filename = str(id) + '/' + fileinfo
+
+    print(jsonfile)
+    print(filename)
+
+    send_file(jsonfile)
+    send_file(filename)
 
 def Sys_Call_Request():
     while TRUE:
@@ -66,10 +77,11 @@ def Sys_Call_Request():
         sys_call = int(sys_call)
 
         if sys_call == 1:
-            update_json()
+            #update_json()
             print("[+]sending jsona and file")
-            send_file("Json.txt")
-            send_file("calc.ods")
+            client_request(0, "calc.ods")
+            #send_file("Json.txt")
+            #send_file("calc.ods")
         if sys_call == 2:
             user_input = input("[+]Enter a message: ")
             send_message(user_input)
