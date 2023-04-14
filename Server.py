@@ -73,6 +73,7 @@ def handle_client_file(conn, addr, file_path):
 
 def set_and_read_file(conn, addr, board_path, metadata):
     file_type = metadata['file_type'] # need to append path to it
+    print(file_type)
     path = str(board_path) + str(file_type)
     file_path = os.path.join(board_path, file_type)
     handle_client_file(conn, addr, file_path)
