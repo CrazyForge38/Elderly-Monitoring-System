@@ -1,0 +1,1 @@
+{"sensor_id": 78787, "date": "xx/xx/xx", "time": "12:23:43", "Board_id": 32, "location": "bedroom", "path": "fes/fse/sef", "file_type": "calc.ods", "action": "add to this"}
