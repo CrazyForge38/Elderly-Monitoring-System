@@ -39,7 +39,7 @@ def send_Raw_Data(msg):
         client.sendall(msg)
 
 def send_file(file):
-    path = '/home/pi/Desktop/Backend/' + file
+    path = '/home/david/Desktop/Backend/' + file
     file = open(path, 'rb')
     image_data = file.read(2048)
     while image_data:
@@ -50,8 +50,8 @@ def send_file(file):
     send_message(DISCONNECT_MESSAGE)
 
 def update_json(): # some of the metadata will be board specific
-    metadata = {'sensor_id': 78787, 'date': 'xx/xx/xx', 'time': '12:23:43', 'Board_id': 32, 'location': 'bedroom', 'path': 'fes/fse/sef', 'file_type': 'excel1.ods', 'action': 'add to this'}
-    with open('/home/pi/Desktop/Backend/Json.txt', 'r+') as f:
+    metadata = {'sensor_id': 78787, 'date': 'xx/xx/xx', 'time': '12:23:43', 'Board_id': 32, 'location': 'bedroom', 'path': 'fes/fse/sef', 'file_type': 'calc.ods', 'action': 'add to this'}
+    with open('/home/david/Desktop/Backend/Json.txt', 'r+') as f:
             f.truncate()
             f.seek(0)
             json.dump(metadata, f)
@@ -66,7 +66,7 @@ def Sys_Call_Request():
         sys_call = int(sys_call)
 
         if sys_call == 1:
-            update_json()
+            #update_json()
             print("[+]sending jsona and file")
             send_file("Json.txt")
             send_file("calc.ods")
