@@ -79,27 +79,6 @@ def set_and_read_file(conn, addr, board_path, metadata):
     print("[+] Error1")
     handle_client_file(conn, addr, file_path)
     print("[+] Error2")
-
-    connected = True
-    while connected:
-        print("hello world")
-        msg_length = conn.recv(HEADER)#
-        print("hello world1")
-        if msg_length:
-            print("hello world2")
-            msg_length = int(msg_length)
-            msg = conn.recv(msg_length)#
-            if msg == DISCONNECT_MESSAGE.encode(FORMAT):
-                print("hello world3")
-                connected = False
-                print(f"[{addr}] file recived")
-                return 
-            print("hello world4")
-            file = open(file_path, "ab")
-            file.write(msg)
-            conn.send("Msg received".encode(FORMAT))
-            file.close()
-    conn.close()
     return
 
 def handling_client(conn, addr, id): # this whole thing in a while loop
@@ -119,8 +98,10 @@ def handling_client(conn, addr, id): # this whole thing in a while loop
 
         if sys_call == 1: # getting file
             recv_local_json(conn, addr, board_path)
+            #recv_local_json(conn, addr, board_path)
             print("[+] Error")
             metadata = read_json(conn, addr, board_path)
+            #metadata = read_json(conn, addr, board_path)
             print(metadata)
             print("[+] Error0")
             set_and_read_file(conn, addr, board_path, metadata)
