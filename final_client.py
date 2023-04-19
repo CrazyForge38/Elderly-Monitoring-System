@@ -68,7 +68,7 @@ def Sys_Call_Request():
         if sys_call == 1:
             #update_json()
             print("[+]sending jsona and file")
-            send_file("Json.txt")
+            #send_file("Json.txt")
             send_file("Json.txt")
             send_file("calc.ods")
         if sys_call == 2:
